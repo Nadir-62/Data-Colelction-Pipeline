@@ -1,0 +1,5 @@
+boto3==1.24.91
+pandas==1.5.0
+requests==2.25.1
+selenium==3.141.0
+webdriver_manager==3.8.3
