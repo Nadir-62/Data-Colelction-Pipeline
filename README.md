@@ -1,4 +1,4 @@
-# Data-Colelction-Pipeline
+# Data-Collection-Pipeline
 
 # Milestone 1
 Create a Github repo
