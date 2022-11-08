@@ -4,7 +4,7 @@
 Create a Github repo
 
 # Milestone 2
-This Milestone required fo rme to choose a website with an adequate amount of data that can be scraped so I have decided to collect data from MyProtein - www.myprotein.com
+This Milestone required for me to choose a website with an adequate amount of data that can be scraped so I have decided to collect data from MyProtein - www.myprotein.com
 
 # Milestone 3
 In the code below I used selenium to navigate through the webpages of the website until I reach and collect the weblinks of the product pages. I used 3 methods to do this:
