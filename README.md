@@ -619,4 +619,44 @@ Finally after building the docker image on my local account I had to push the im
 
 docker push nadir62/data_scraper_docker2
 
+## MileStone 7 - Set up a CI/CD pipline for my Docker image
+
+In this Milestone I created a CI Pipline on Github that would push my Docker Container on to the Docker hub
+
+The first thing that was required of me was to add "secret variables" to my Github. These variables include the Docker ID and the Personal Access Token (Password equivalent)
+of my Dockerhub. 
+
+After doing this I created an workflow and ran the YML file as seen below:
+name: ci
+
+on:
+  push:
+    branches:
+      - "main"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/clockbox:latest
+
+This YML file would automate the build of my Image and then upload it to the Dockerhub, using the "secret" variables that I applied in the previous step.
+
+As you can see in the image below after a few minutes the docker image was uploaded to the Dockerhub.
+
+image.png
 
