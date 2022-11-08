@@ -658,5 +658,6 @@ This YML file would automate the build of my Image and then upload it to the Doc
 
 As you can see in the image below after a few minutes the docker image was uploaded to the Dockerhub.
 
-image.png
+![image](https://user-images.githubusercontent.com/112514576/200587975-e7a88dfa-1049-4cae-9aec-21a0f6158cc4.png)
+
 
