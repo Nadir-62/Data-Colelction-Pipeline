@@ -4,7 +4,6 @@ from selenium.webdriver.common.by import By
 from time import sleep,time
 from webdriver_manager.chrome import ChromeDriverManager
 
-import boto3
 import csv
 import json
 import os
@@ -26,15 +25,14 @@ class Scraper():
     
     """
     def __init__(self,URL):
-        chrome_options = self.generate_options()
-        self.driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
+        self.driver = webdriver.Chrome(ChromeDriverManager().install(), options= self.__generate_options())
         self.URL = ("https://www.myprotein.com/")
         self.homepage_links =[]
         self.data_list = []
         self.page_titles =[] 
         self.page_idx=0
         
-    def generate_options(self):
+    def __generate_options(self):
         chrome_options = Options()
         chrome_options.add_argument("--disable-notifications")
         chrome_options.add_argument('no-sandbox') 
@@ -42,18 +40,9 @@ class Scraper():
         chrome_options.add_argument("disable-dev-shm-usage")
         return chrome_options
     
-    def timer1(func):
-        def wrapper(*args, **kwargs):
-            t1 = time()
-            result = func(*args,**kwargs)
-            t2 = time()
-            print(f"time taken = {t2-t1} ms")
-            return result
-        return wrapper    
- 
-    def navigate(self):
+    def navigate(self,xpath =  '//a[@class="responsiveFlyoutMenu_levelOneLink responsiveFlyoutMenu_levelOneLink-hasChildren"]'):
         """This function navigates through the homepage to each individual section. It also collects the titles of each section"""
-        click_drop_down = self.driver.find_elements(By.XPATH, '//a[@class="responsiveFlyoutMenu_levelOneLink responsiveFlyoutMenu_levelOneLink-hasChildren"]')
+        click_drop_down = self.driver.find_elements(By.XPATH, xpath)
         for links in click_drop_down[0:5]:
             title = links.get_attribute("data-context")
             drop_down_link = links.get_attribute("href")
@@ -101,10 +90,12 @@ class Scraper():
         """This collects all the relevent information for every product on the produuct page. This includes the ProductID, Name and price. 
         All of this information is then added to a dictionary. Each item in the dictionary has a UUID as the key"""
         product_id = self.driver.find_elements(By.XPATH, '//*[@class="js-enhanced-ecommerce-data athenaProductBlock_hiddenElement"]')
-        Data_dict = {}
+        data_dict = {}
         for element in product_id:
-            Data_dict.setdefault(str(uuid.uuid4()),[element.get_attribute("data-product-id"),element.get_attribute("data-product-title"),element.get_attribute("data-product-price")])
-        return Data_dict
+            data_dict.setdefault(str(uuid.uuid4()),[element.get_attribute("data-product-id"),
+                                                    element.get_attribute("data-product-title"),
+                                                    element.get_attribute("data-product-price")])
+        return data_dict
     
     
     def scrape(self):
@@ -131,16 +122,7 @@ class Scraper():
         except FileNotFoundError:
             print(json_file+"was not found")
         
-        
-        
-        
-
-    def s3_bucket(self,destination):
-        bucket = "nadirsmyprotiendata"
-        self.json_file_save()
-        self.s3.upload_file(destination, bucket, "MyProtein_data.json")
-
-        
+     
     def image_downloader(self):
         """
         This function extracts the src links from the dictionary and downloads the images.
@@ -218,7 +200,7 @@ def timer(func):
         return result
     return wrapper   
 @timer             
-def Website(URL):
+def website(URL):
     """ 
     This is the overall functionality of the program.
     - Firstly the Website URL is obtained
@@ -231,7 +213,6 @@ def Website(URL):
     """
     MyProtein = Scraper(URL)
     MyProtein.driver.get(MyProtein.URL)
-    
     sleep(2)
     MyProtein.product_page_scraper()
     print(MyProtein.data_list)
@@ -257,4 +238,4 @@ def make_dir():
 if __name__ == "__main__":
     URL= ("https://www.myprotein.com/")
     make_dir()
-    Website(URL)
+    website(URL)
