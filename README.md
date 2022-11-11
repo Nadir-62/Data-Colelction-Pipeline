@@ -79,7 +79,7 @@ if __name__ == "__main__":
 # Milestone 4 - scraping images and Information
 In this Milestone I was tasked to scrape all the important information from the links that I collected in the previous Milestone. In order to do this I knew I first had to create two methods; the first scraping all the product images from the page and the second scraping all the relevant information (product-id, name , price).
 I then created a dictionary for the product information so that each product would be assigned to a UUID as the key and the values would be the relevant information scraped in a list format.
-'''
+```
     def product_image(self):
         image_src = []
         image = self.driver.find_elements(By.XPATH, '//*[@data-track="product-image"]')    
@@ -106,9 +106,9 @@ After creating the 'Data.dict' variable, I needed to append image src inforamati
             attribute_dict[key] = value
             idx +=1
         return attribute_dict
-'''
+```
 I then had to ensure that this program would run iteratively for each product page, where each product page would have their own dictionary. 
-'''
+```
 def Website(URL):
     MyProtein = Scraper(URL)
     MyProtein.driver.get(MyProtein.URL)
@@ -120,13 +120,13 @@ def Website(URL):
         page_dict = MyProtein.scrape()
         MyProtein.data_list.append(page_dict)
     print(MyProtein.data_list)
-'''
+```
 The final part of this Milestone was to create a folder and store all data that was scraped in a json file. I also needed to download all the images from the src links and store them in a folder called "images".
 
 Below are the methods I created to accomplish this part of the Milestone, along with the final version of the code:
 
 Make relevant directories:
-'''
+```
 def make_dir():
     folders = ["raw_data","images"]
     for dir in range (len(folders)):
@@ -137,9 +137,9 @@ def make_dir():
             os.mkdir(path)
         except OSError as error:
             print(error)
-'''
+```
 Create Json file:
-'''
+```
     def json_file_save(self):
         with open("data.json", "w") as f:
             json.dump(self.data_list,f)
@@ -168,9 +168,9 @@ Image Downloader method:
                 os.replace(image_file,destination)
             except FileNotFoundError:
                 print(image_file+"was not found")
-'''
+```
 Program functionality method:
-'''
+```
 def Website(URL):
     MyProtein = Scraper(URL)
     MyProtein.driver.get(MyProtein.URL)
@@ -184,9 +184,9 @@ def Website(URL):
         MyProtein.data_list.append(page_dict)
     print(MyProtein.data_list)
     MyProtein.json_file_save()
-'''
+```
 Final code:
-'''
+```
 import requests
 import json
 import os
@@ -318,11 +318,11 @@ if __name__ == "__main__":
     URL= ("https://www.myprotein.com/")
     make_dir()
     Website(URL)
-''' 
+``` 
  ## Milestone 5 Documentation and Testing
  In this Milestone I took steps to optimise and improve the code written above. The first aspect of the code that I tested was to check the duration of the scraper.
  I did this by creating a "timer decorator" as shown below:
- '''
+```
  def timer(func):
     def wrapper(*args, **kwargs):
         t1 = time()
@@ -331,12 +331,12 @@ if __name__ == "__main__":
         print(f"time taken = {t2-t1} ms")
         return result
     return wrapper
-'''
+```
 This decorator was used to check the duratation of the code aswell as individual functions which made it easier to idedntify which areas of the code
 were inefficient. 
 
 After implementing this timer I was able to improve the time efficiency of my code by 30 seconds by altering the code into the program below:
-'''
+```
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -588,14 +588,14 @@ if __name__ == "__main__":
     URL= ("https://www.myprotein.com/")
     make_dir()
     Website(URL)
-'''
+```
 
 ## MileStone 6 - Containerising the scraper
 
 In this Milestone I learnt how to use Docker Containers and Images. This was done so that this program can be run on any machine. However as Docker does not use
 a GUI I had to ensure that the scraper was in headless mode. This was done using the Function below:
 
-'''
+```
     def generate_options(self):
         chrome_options = Options()
         chrome_options.add_argument("--disable-notifications")
@@ -603,9 +603,9 @@ a GUI I had to ensure that the scraper was in headless mode. This was done using
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("disable-dev-shm-usage")
         return chrome_options
-'''
+```
 After that I used created a Docker file to build my Docker Image as shown below:
-'''
+```
 FROM python:3.10.4
 
 RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - &&\
@@ -619,7 +619,7 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key
 COPY . .
 RUN pip install -r requirements.txt
 ENTRYPOINT ["python", "Data_scraper.py"]
-'''
+```
 This Docker Image was able to run this program on a Linux Operating system.
 
 Finally after building the docker image on my local account I had to push the image onto docker hub by first creating a docker repository renaming the docker to match my repository and then using:
@@ -634,7 +634,7 @@ The first thing that was required of me was to add "secret variables" to my Gith
 of my Dockerhub. 
 
 After doing this I created an workflow and ran the YML file as seen below:
-'''
+```
 name: ci
 
 on:
@@ -661,12 +661,20 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/clockbox:latest
-'''
+```
 
 This YML file would automate the build of my Image and then upload it to the Dockerhub, using the "secret" variables that I applied in the previous step.
 
 As you can see in the image below after a few minutes the docker image was uploaded to the Dockerhub.
 
 ![image](https://user-images.githubusercontent.com/112514576/200587975-e7a88dfa-1049-4cae-9aec-21a0f6158cc4.png)
+
+## Summary
+Overall I learnt how to use several tools over the course of this project. These include:
+- Selenium webdrivers
+- Pandas
+- Docker images and containers
+- CI/CD pipelines
+- Python decorators
 
 
