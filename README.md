@@ -13,7 +13,7 @@ In the code below I used selenium to navigate through the webpages of the websit
  - Scroll & click on the "view all button". This method would reveal the full product page and the URL of the page would be added to the list.
  This procedure was repeated 5 times, for the 5 different product pages on that website.
 
-"""
+```
 from inspect import Attribute
 from time import sleep
 from tkinter import E
@@ -74,7 +74,7 @@ def Website(URL):
 if __name__ == "__main__":
     URL= ("https://www.myprotein.com/")
     Website(URL)
-"""
+```
 
 # Milestone 4 - scraping images and Information
 In this Milestone I was tasked to scrape all the important information from the links that I collected in the previous Milestone. In order to do this I knew I first had to create two methods; the first scraping all the product images from the page and the second scraping all the relevant information (product-id, name , price).
